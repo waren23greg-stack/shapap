@@ -5,6 +5,7 @@ import '../widgets/action_strip.dart';
 import '../widgets/delta_card.dart';
 import '../widgets/lifetime_strip.dart';
 import '../widgets/network_toggle.dart';
+import '../widgets/surge_banner.dart';
 import '../widgets/top_bar.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -25,7 +26,9 @@ class HomeScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: const [
                   TopBar(),
-                  SizedBox(height: 28),
+                  SizedBox(height: 16),
+                  SurgeBanner(),
+                  SizedBox(height: 20),
                   LifetimeStrip(),
                   SizedBox(height: 28),
                   DeltaCard(),

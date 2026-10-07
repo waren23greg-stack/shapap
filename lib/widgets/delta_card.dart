@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 import '../data/app_state.dart';
+import '../stats/stats.dart';
 
 class DeltaCard extends StatelessWidget {
   const DeltaCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // H6 replaces these two lines with live model output.
-    final before = 63;
-    final after = 5;
+    // Live model output: claim risk, manual entry vs single-event capture.
+    final before = (rejectionRisk(const ClaimInputs(
+                dateMismatch: true,
+                blur: 0.6,
+                nameDissimilarity: 0.3,
+                clerkExpMonths: 6)) *
+            100)
+        .round();
+    final after = (rejectionRisk(const ClaimInputs(
+                dateMismatch: false,
+                blur: 0.1,
+                nameDissimilarity: 0.0,
+                clerkExpMonths: 6)) *
+            100)
+        .round();
 
     return Container(
       padding: const EdgeInsets.all(16),
