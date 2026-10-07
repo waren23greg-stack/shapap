@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/action_strip.dart';
 import '../widgets/delta_card.dart';
 import '../widgets/lifetime_strip.dart';
+import '../widgets/network_toggle.dart';
 import '../widgets/top_bar.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -27,6 +28,11 @@ class HomeScreen extends ConsumerWidget {
                   SizedBox(height: 28),
                   DeltaCard(),
                   Spacer(),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: NetworkToggle(),
+                  ),
+                  SizedBox(height: 8),
                   ActionStrip(),
                 ],
               ),
