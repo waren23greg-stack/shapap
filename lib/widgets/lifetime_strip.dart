@@ -1,46 +1,44 @@
 import 'package:flutter/material.dart';
 import '../data/app_state.dart';
+import '../screens/visit_screen.dart';
 
 class LifetimeStrip extends StatelessWidget {
   const LifetimeStrip({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final items = demoPatient.timeline;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (var i = 0; i < items.length; i++) ...[
+        for (var i = 0; i < demoVisits.length; i++) ...[
           SizedBox(
             width: 84,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+            child: GestureDetector(
+              onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => VisitScreen(visit: demoVisits[i]))),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Container(
-                  width: 12,
-                  height: 12,
+                  width: 14, height: 14,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: i == items.length - 1
-                        ? const Color(0xFF34D399)
-                        : Colors.white38,
+                    color: i == demoVisits.length - 1
+                      ? const Color(0xFF34D399) : Colors.white38,
+                    border: Border.all(
+                      color: i == demoVisits.length - 1
+                        ? Colors.transparent : Colors.white24, width: 1.5),
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(items[i],
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 11, color: Colors.white70)),
-              ],
+                Text(demoVisits[i].shortLabel,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 10, color: context.mutedTxt)),
+              ]),
             ),
           ),
-          if (i < items.length - 1)
-            Expanded(
-              child: Container(
-                height: 2,
-                margin: const EdgeInsets.only(top: 5),
-                color: Colors.white24,
-              ),
-            ),
+          if (i < demoVisits.length - 1)
+            Expanded(child: Container(
+              height: 2, margin: const EdgeInsets.only(top: 6),
+              color: context.dividerCol)),
         ],
       ],
     );
