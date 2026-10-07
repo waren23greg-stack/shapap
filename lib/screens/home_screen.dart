@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/sync.dart';
 import '../widgets/action_strip.dart';
 import '../widgets/delta_card.dart';
 import '../widgets/lifetime_strip.dart';
@@ -11,6 +12,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(syncRunnerProvider); // keeps the fake sync alive
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
       body: SafeArea(
