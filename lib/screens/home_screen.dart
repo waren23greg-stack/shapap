@@ -68,7 +68,7 @@ class HomeScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  const ActionStrip(),
+                  const ActionStrip(), const SizedBox(height: 12), Text('Prototype. All patient data is fictional.', textAlign: TextAlign.center, style: TextStyle(fontSize: 10, color: context.mutedTxt)),
                 ],
               ),
             ),
