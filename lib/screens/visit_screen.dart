@@ -17,7 +17,7 @@ class VisitScreen extends StatelessWidget {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
       ),
       body: SafeArea(
-        child: Center(
+        child: Align(alignment: Alignment.topCenter,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
             child: SingleChildScrollView(
