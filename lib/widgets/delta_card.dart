@@ -7,7 +7,7 @@ class DeltaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Live model output: claim risk, manual entry vs single-event capture.
+    // Live model output: claim risk, typed by hand vs auto-filled.
     final before = (rejectionRisk(const ClaimInputs(
                 dateMismatch: true,
                 blur: 0.6,
@@ -24,10 +24,12 @@ class DeltaCard extends StatelessWidget {
         .round();
 
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        borderRadius: BorderRadius.circular(16),
+        color: context.cardBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: context.lineCol),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,33 +38,44 @@ class DeltaCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text('TODAY',
+                    style: TextStyle(
+                        fontSize: 11,
+                        letterSpacing: 0.8,
+                        color: context.mutedTxt)),
+                const SizedBox(height: 8),
                 for (var i = 0; i < demoPatient.summary.length; i++)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Text(
                       '${i + 1}. ${demoPatient.summary[i]}',
-                      style: const TextStyle(fontSize: 16, height: 1.3),
+                      style: TextStyle(
+                          fontSize: 16,
+                          height: 1.3,
+                          color: context.primaryTxt),
                     ),
                   ),
               ],
             ),
           ),
           const SizedBox(width: 12),
-          Column(
-            children: [
-              const Text('CLAIM RISK',
-                  style: TextStyle(
-                      fontSize: 10, color: Colors.white54, letterSpacing: 1)),
-              const SizedBox(height: 4),
-              Text('$before% \u2192 $after%',
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFFF87171))),
-              const SizedBox(height: 2),
-              const Text('manual \u2192 auto',
-                  style: TextStyle(fontSize: 10, color: Colors.white54)),
-            ],
+          SizedBox(
+            width: 104,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Claim rejection risk',
+                    style: TextStyle(fontSize: 10, color: context.mutedTxt)),
+                const SizedBox(height: 4),
+                Text('$after%',
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: context.good)),
+                Text('$before% if typed by hand',
+                    style: TextStyle(fontSize: 11, color: context.bad)),
+              ],
+            ),
           ),
         ],
       ),

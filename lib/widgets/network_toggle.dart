@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/app_state.dart';
 
+/// Demo switch that simulates the internet going away and coming back.
 class NetworkToggle extends ConsumerWidget {
   const NetworkToggle({super.key});
 
@@ -11,13 +12,11 @@ class NetworkToggle extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(online ? Icons.wifi : Icons.wifi_off,
-            size: 18, color: Colors.white54),
-        const SizedBox(width: 6),
-        Text(online ? 'Network online' : 'Network OFFLINE',
-            style: const TextStyle(fontSize: 12, color: Colors.white54)),
+        Text(online ? 'Internet: ON' : 'Internet: OFF',
+            style: TextStyle(fontSize: 12, color: context.mutedTxt)),
         Switch(
           value: online,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onChanged: (v) => ref.read(onlineProvider.notifier).state = v,
         ),
       ],

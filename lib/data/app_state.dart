@@ -1,81 +1,110 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final onlineProvider    = StateProvider<bool>((ref) => true);
-final syncingProvider   = StateProvider<bool>((ref) => false);
-final demoHourProvider  = StateProvider<int>((ref) => 10);
-final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.dark);
+/// true = internet on; false = offline (claims are saved on the device).
+final onlineProvider = StateProvider<bool>((ref) => true);
 
-// Use ctx.cardBg / ctx.primaryTxt etc. instead of hardcoded colours
+/// true while the fake sync is running.
+final syncingProvider = StateProvider<bool>((ref) => false);
+
+/// Demo hour for the busy-hour banner. Tap the banner to flip 10 / 3.
+final demoHourProvider = StateProvider<int>((ref) => 10);
+
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.light);
+
+/// Theme-aware colours: use context.cardBg, context.good, etc.
 extension AppColors on BuildContext {
-  bool  get isDark     => Theme.of(this).brightness == Brightness.dark;
-  Color get scaffoldBg => isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
-  Color get cardBg     => isDark ? const Color(0xFF1E293B) : Colors.white;
+  bool get isDark => Theme.of(this).brightness == Brightness.dark;
+  Color get scaffoldBg =>
+      isDark ? const Color(0xFF0F172A) : const Color(0xFFF5F7FA);
+  Color get cardBg => isDark ? const Color(0xFF1E293B) : Colors.white;
   Color get primaryTxt => isDark ? Colors.white : const Color(0xFF0F172A);
-  Color get mutedTxt   => isDark ? Colors.white54 : const Color(0xFF64748B);
-  Color get dividerCol => isDark ? Colors.white12 : const Color(0xFFE2E8F0);
+  Color get mutedTxt => isDark ? Colors.white60 : const Color(0xFF64748B);
+  Color get lineCol => isDark ? Colors.white12 : const Color(0xFFE2E8F0);
+  Color get good => isDark ? const Color(0xFF34D399) : const Color(0xFF047857);
+  Color get warn => isDark ? const Color(0xFFFBBF24) : const Color(0xFFB45309);
+  Color get bad => isDark ? const Color(0xFFF87171) : const Color(0xFFB91C1C);
 }
 
 class Patient {
-  final String id, name, shaId;
+  final String id;
+  final String name;
   final int age;
-  final List<String> summary, timeline;
+  final String shaId;
+  final List<String> summary;
+
   const Patient({
-    required this.id, required this.name, required this.age,
-    required this.shaId, required this.summary, required this.timeline,
+    required this.id,
+    required this.name,
+    required this.age,
+    required this.shaId,
+    required this.summary,
   });
 }
 
 class Visit {
-  final String hospital, shortLabel, date, condition, diagnosis, outcome;
+  final String hospital;
+  final String shortLabel;
+  final String date;
+  final String reason;
+  final String diagnosis;
   final List<String> medications;
+  final String outcome;
+
   const Visit({
-    required this.hospital, required this.shortLabel, required this.date,
-    required this.condition, required this.diagnosis,
-    required this.medications, required this.outcome,
+    required this.hospital,
+    required this.shortLabel,
+    required this.date,
+    required this.reason,
+    required this.diagnosis,
+    required this.medications,
+    required this.outcome,
   });
 }
 
+// All demo data is fictional.
 const demoPatient = Patient(
-  id: 'P001', name: 'Amina Wanjiru', age: 27, shaId: 'SHA-0042-1187',
+  id: 'P001',
+  name: 'Amina Wanjiru',
+  age: 27,
+  shaId: 'SHA-0042-1187',
   summary: [
-    'BP normalizing (118/76).',
-    'SVD successful at 04:00 today.',
-    'Baby 3.2\u00A0kg, healthy.',
-  ],
-  timeline: [
-    'KNH \u00B7 May',
-    'AKH \u00B7 Aug',
-    'Here \u00B7 Today',
+    'Blood pressure normal (118/76).',
+    'Normal delivery at 04:00 today.',
+    'Baby 3.2 kg, healthy.',
   ],
 );
 
 const demoVisits = [
   Visit(
-    hospital:   'Kenyatta National Hospital',
-    shortLabel: 'KNH \u00B7 May',
-    date:       'May 2026',
-    condition:  'Antenatal care \u2014 first visit',
-    diagnosis:  'Z34.0  \u2014  Normal first pregnancy',
-    medications: ['Folic acid 5mg daily', 'Ferrous sulphate 200mg daily'],
-    outcome:    'Healthy. Scan booked for 20 weeks.',
+    hospital: 'Kenyatta National Hospital',
+    shortLabel: 'KNH\nMay',
+    date: 'May 2026',
+    reason: 'First antenatal visit',
+    diagnosis: 'Z34.0 - Supervision of normal first pregnancy',
+    medications: ['Folic acid 5 mg daily', 'Ferrous sulphate 200 mg daily'],
+    outcome: 'Healthy. Scan booked for 20 weeks.',
   ),
   Visit(
-    hospital:   'Aga Khan University Hospital',
-    shortLabel: 'AKH \u00B7 Aug',
-    date:       'Aug 2026',
-    condition:  '20-week obstetric scan',
-    diagnosis:  'Z36  \u2014  Antenatal screening, normal',
-    medications: ['Calcium 500mg daily'],
-    outcome:    'Normal fetal growth. EDD confirmed.',
+    hospital: 'Aga Khan University Hospital',
+    shortLabel: 'Aga Khan\nAug',
+    date: 'Aug 2026',
+    reason: '20-week scan',
+    diagnosis: 'Z36 - Antenatal screening, normal',
+    medications: ['Calcium 500 mg daily'],
+    outcome: 'Baby growing normally. Due date confirmed.',
   ),
   Visit(
-    hospital:   'This facility',
-    shortLabel: 'Here \u00B7 Today',
-    date:       'Today',
-    condition:  'Labour and delivery',
-    diagnosis:  'O80  \u2014  Spontaneous vertex delivery',
-    medications: ['Oxytocin 10 IU IM', 'Amoxicillin 500mg TDS \u00D7 5 days'],
-    outcome:    'SVD successful. Baby 3.2\u00A0kg. Apgar 9/10.',
+    hospital: 'This facility',
+    shortLabel: 'This facility\nToday',
+    date: 'Today',
+    reason: 'Labour and delivery',
+    diagnosis: 'O80 - Normal delivery',
+    medications: [
+      'Oxytocin 10 IU injection (after delivery)',
+      'Paracetamol 1 g when needed',
+      'Ferrous sulphate 200 mg daily',
+    ],
+    outcome: 'Normal delivery. Baby 3.2 kg. Apgar 9/10.',
   ),
 ];

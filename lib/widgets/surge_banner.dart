@@ -10,35 +10,36 @@ class SurgeBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final hour = ref.watch(demoHourProvider);
     final p = surgeProbability(hourlyLambda[hour], surgeCapacity);
-    final surge = p > surgeThreshold;
+    final busy = p > surgeThreshold;
     final pct = (p * 100).round();
     final hh = hour.toString().padLeft(2, '0');
-    final color = surge ? const Color(0xFFFBBF24) : Colors.white54;
+    final color = busy ? context.warn : context.mutedTxt;
 
     return GestureDetector(
       onTap: () =>
           ref.read(demoHourProvider.notifier).state = hour == 10 ? 3 : 10,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.6)),
+          color: color.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(surge ? Icons.trending_up : Icons.trending_flat,
-                color: color, size: 20),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                surge
-                    ? 'Rush expected $hh:00. P($surgeCapacity+ arrivals) = $pct%. '
-                        'Trust Mode pre-armed.'
-                    : 'Quiet at $hh:00. P($surgeCapacity+ arrivals) = $pct%.',
-                style: TextStyle(color: color, fontSize: 12),
-              ),
+            Text(
+              busy
+                  ? 'Busy hour expected at $hh:00 (about $pct% chance of '
+                      '$surgeCapacity+ arrivals). Offline backup is ready.'
+                  : 'Quiet hour at $hh:00 (about $pct% chance of '
+                      '$surgeCapacity+ arrivals).',
+              style: TextStyle(
+                  color: color, fontSize: 13, fontWeight: FontWeight.w600),
             ),
+            const SizedBox(height: 2),
+            Text('Demo: tap to change the hour',
+                style: TextStyle(color: context.mutedTxt, fontSize: 10)),
           ],
         ),
       ),

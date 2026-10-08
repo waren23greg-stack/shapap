@@ -7,93 +7,82 @@ class VisitScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isToday = visit.date == 'Today';
-    const accent  = Color(0xFF34D399);
     return Scaffold(
       backgroundColor: context.scaffoldBg,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: context.scaffoldBg,
         foregroundColor: context.primaryTxt,
+        scrolledUnderElevation: 0,
         title: Text(visit.hospital,
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-            // Date chip
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: isToday ? accent.withValues(alpha: 0.12) : context.cardBg,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: isToday ? accent : context.dividerCol),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(visit.date,
+                      style: TextStyle(color: context.mutedTxt, fontSize: 13)),
+                  const SizedBox(height: 18),
+                  _label(context, 'WHAT WAS TREATED'),
+                  const SizedBox(height: 4),
+                  Text(visit.reason,
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          height: 1.2,
+                          color: context.primaryTxt)),
+                  const SizedBox(height: 20),
+                  _label(context, 'DIAGNOSIS'),
+                  const SizedBox(height: 4),
+                  Text(visit.diagnosis,
+                      style: TextStyle(
+                          fontSize: 15, color: context.primaryTxt)),
+                  const SizedBox(height: 20),
+                  _label(context, 'MEDICATION'),
+                  const SizedBox(height: 6),
+                  for (final m in visit.medications)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text('- $m',
+                          style: TextStyle(
+                              fontSize: 15, color: context.primaryTxt)),
+                    ),
+                  const SizedBox(height: 18),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: context.good.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label(context, 'OUTCOME'),
+                        const SizedBox(height: 4),
+                        Text(visit.outcome,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: context.good)),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              child: Text(visit.date,
-                style: TextStyle(
-                  color: isToday ? accent : context.mutedTxt,
-                  fontSize: 13, fontWeight: FontWeight.w600)),
             ),
-            const SizedBox(height: 22),
-
-            // What happened
-            _label(context, 'What happened'),
-            const SizedBox(height: 6),
-            Text(visit.condition,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700,
-                color: context.primaryTxt, height: 1.2)),
-            const SizedBox(height: 22),
-
-            // Diagnosis
-            _label(context, 'Diagnosis'),
-            const SizedBox(height: 6),
-            Text(visit.diagnosis,
-              style: TextStyle(fontSize: 15, color: context.primaryTxt,
-                fontWeight: FontWeight.w500)),
-            const SizedBox(height: 22),
-
-            // Medications
-            _label(context, 'Medications prescribed'),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8, runSpacing: 8,
-              children: visit.medications.map((m) => Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: context.cardBg,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: context.dividerCol),
-                ),
-                child: Text(m,
-                  style: TextStyle(fontSize: 13, color: context.primaryTxt)),
-              )).toList(),
-            ),
-            const SizedBox(height: 24),
-
-            // Outcome
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: accent.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: accent.withValues(alpha: 0.35)),
-              ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                _label(context, 'Outcome'),
-                const SizedBox(height: 6),
-                Text(visit.outcome,
-                  style: const TextStyle(fontSize: 16, color: accent,
-                    fontWeight: FontWeight.w600)),
-              ]),
-            ),
-          ]),
+          ),
         ),
       ),
     );
   }
 
-  Widget _label(BuildContext ctx, String text) => Text(text,
-    style: TextStyle(fontSize: 11, color: ctx.mutedTxt, letterSpacing: 0.8));
+  Widget _label(BuildContext context, String text) => Text(text,
+      style: TextStyle(
+          fontSize: 11, letterSpacing: 0.8, color: context.mutedTxt));
 }

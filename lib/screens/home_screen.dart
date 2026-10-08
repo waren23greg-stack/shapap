@@ -15,7 +15,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(syncRunnerProvider);
+    ref.watch(syncRunnerProvider); // keeps the fake sync alive
     final isDark = ref.watch(themeModeProvider) == ThemeMode.dark;
     return Scaffold(
       backgroundColor: context.scaffoldBg,
@@ -23,40 +23,50 @@ class HomeScreen extends ConsumerWidget {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
-            child: Padding(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const TopBar(),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 14),
                   const SurgeBanner(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 18),
                   const LifetimeStrip(),
-                  const SizedBox(height: 6),
-                  Text('Tap a dot to see visit history',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 10, color: context.mutedTxt)),
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 18),
                   const DeltaCard(),
-                  const Spacer(),
-                  Row(children: [
-                    TextButton.icon(
-                      onPressed: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => const SosScreen())),
-                      icon: const Icon(Icons.warning_amber, size: 18),
-                      label: const Text('Responder view (demo)'),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      tooltip: 'Switch theme',
-                      icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode,
-                        size: 20, color: context.mutedTxt),
-                      onPressed: () => ref.read(themeModeProvider.notifier).state =
-                        isDark ? ThemeMode.light : ThemeMode.dark,
-                    ),
-                    const NetworkToggle(),
-                  ]),
+                  const SizedBox(height: 24),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const SosScreen()),
+                        ),
+                        child: const Text('Responder view (demo)'),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            tooltip: 'Switch light / dark',
+                            icon: Icon(
+                                isDark ? Icons.light_mode : Icons.dark_mode,
+                                size: 20,
+                                color: context.mutedTxt),
+                            onPressed: () => ref
+                                .read(themeModeProvider.notifier)
+                                .state =
+                                isDark ? ThemeMode.light : ThemeMode.dark,
+                          ),
+                          const NetworkToggle(),
+                        ],
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   const ActionStrip(),
                 ],

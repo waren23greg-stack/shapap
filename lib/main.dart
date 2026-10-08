@@ -7,18 +7,23 @@ void main() => runApp(const ProviderScope(child: ShapapApp()));
 
 class ShapapApp extends ConsumerWidget {
   const ShapapApp({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mode = ref.watch(themeModeProvider);
+    const seed = Color(0xFF0F766E);
     return MaterialApp(
       title: 'Shapap',
       debugShowCheckedModeBanner: false,
-      themeMode: mode,
-      theme: ThemeData.light(useMaterial3: true).copyWith(
-        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
+      themeMode: ref.watch(themeModeProvider),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: seed,
+        brightness: Brightness.light,
       ),
-      darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0F172A),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: seed,
+        brightness: Brightness.dark,
       ),
       home: const HomeScreen(),
     );

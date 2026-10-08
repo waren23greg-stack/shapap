@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/app_state.dart';
 import '../data/outbox.dart';
 
-// Simulated contents of the NFC tag. In the real design this payload is
-// AES-encrypted on the tag and decrypted locally by the responder app.
+// Simulated contents of the NFC wristband. In the real design this payload is
+// encrypted on the tag and decrypted locally by the responder app.
 const _tag = <String, String>{
   'Blood type': 'O negative',
   'Allergy': 'Severe penicillin allergy',
@@ -40,10 +40,13 @@ class _SosScreenState extends ConsumerState<SosScreen> {
   Widget build(BuildContext context) {
     final online = ref.watch(onlineProvider);
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: context.scaffoldBg,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: const Text('Emergency responder'),
+        backgroundColor: context.scaffoldBg,
+        foregroundColor: context.primaryTxt,
+        scrolledUnderElevation: 0,
+        title: const Text('Responder view (demo)',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
       ),
       body: SafeArea(
         child: Center(
@@ -51,7 +54,18 @@ class _SosScreenState extends ConsumerState<SosScreen> {
             constraints: const BoxConstraints(maxWidth: 480),
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: _read ? _result(online) : _tapView(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: _read ? _result(online) : _tapView()),
+                  Text(
+                    'Demo only. In the real system this is a separate app '
+                    'for responders. It cannot discharge patients.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 11, color: context.mutedTxt),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -63,16 +77,17 @@ class _SosScreenState extends ConsumerState<SosScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text('Unconscious patient. Tap the wristband.',
-            textAlign: TextAlign.center, style: TextStyle(fontSize: 18)),
-        const SizedBox(height: 32),
+        Text('Unconscious patient? Tap the wristband.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, color: context.primaryTxt)),
+        const SizedBox(height: 28),
         SizedBox(
-          width: 200,
-          height: 200,
+          width: 180,
+          height: 180,
           child: FilledButton(
             style: FilledButton.styleFrom(
               shape: const CircleBorder(),
-              backgroundColor: const Color(0xFFEF4444),
+              backgroundColor: const Color(0xFFDC2626),
               foregroundColor: Colors.white,
             ),
             onPressed: _reading ? null : _tap,
@@ -81,9 +96,9 @@ class _SosScreenState extends ConsumerState<SosScreen> {
                 : const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.nfc, size: 56),
+                      Icon(Icons.nfc, size: 48),
                       SizedBox(height: 8),
-                      Text('Simulate NFC tap'),
+                      Text('Simulate wristband tap'),
                     ],
                   ),
           ),
@@ -99,18 +114,18 @@ class _SosScreenState extends ConsumerState<SosScreen> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E293B),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFEF4444), width: 2),
+            color: context.cardBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFDC2626), width: 2),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('DISPATCH ALERT',
+              const Text('EMERGENCY INFORMATION',
                   style: TextStyle(
-                      color: Color(0xFFEF4444),
+                      color: Color(0xFFDC2626),
                       fontWeight: FontWeight.w700,
-                      letterSpacing: 1)),
+                      letterSpacing: 0.8)),
               const SizedBox(height: 12),
               for (final e in _tag.entries)
                 Padding(
@@ -119,11 +134,13 @@ class _SosScreenState extends ConsumerState<SosScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(e.key.toUpperCase(),
-                          style: const TextStyle(
-                              fontSize: 10, color: Colors.white54)),
+                          style: TextStyle(
+                              fontSize: 10, color: context.mutedTxt)),
                       Text(e.value,
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w600)),
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: context.primaryTxt)),
                     ],
                   ),
                 ),
@@ -133,16 +150,17 @@ class _SosScreenState extends ConsumerState<SosScreen> {
         const SizedBox(height: 16),
         Text(
           online
-              ? 'SOS sent to the nearest facility (simulated).'
-              : 'Offline: SOS queued. It sends when any signal returns.',
+              ? 'Alert sent to the nearest facility (simulated).'
+              : 'No internet: alert saved, it sends as soon as there is a signal.',
           textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.white70),
+          style: TextStyle(color: context.mutedTxt),
         ),
         const Spacer(),
         OutlinedButton(
           onPressed: () => setState(() => _read = false),
           child: const Text('Tap another wristband'),
         ),
+        const SizedBox(height: 8),
       ],
     );
   }
