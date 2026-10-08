@@ -1,16 +1,21 @@
-# shapap
+# Shapap (Tiba Hakika)
 
-A new Flutter project.
+Offline-first point-of-care prototype built for Innovation Week. Pull the plug, it still works.
 
-## Getting Started
+## What the prototype shows
+- One clinician screen: who the patient is, whether the system is connected, what happened today, one action.
+- Tap a past visit to see what was treated, the diagnosis and the medication.
+- Offline mode: discharging with no internet saves the claim on the device and sends it when the internet returns.
+- A Poisson busy-hour forecast and a logistic claim-rejection score (seeded, illustrative numbers).
+- Responder view: tap a wristband to see blood type, allergy and location (the tap is simulated).
+- Light and dark mode.
 
-This project is a starting point for a Flutter application.
+## What is simulated
+The internet switch, the sync (a 2-second timer), the wristband tap, the patient and visit data (all fictional), and the model coefficients (seeded, not fitted).
 
-A few resources to get you started if this is your first Flutter project:
+## Roadmap (not built)
+FastAPI sync service, Kafka event log, per-patient encryption, login and role-based access (discharge is clinician-only), audit log, on-prem summariser, real NFC provisioning, models fitted on real rejection data. The responder view becomes a separate app.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Run
+    flutter pub get
+    flutter run -d chrome --web-port 8080
