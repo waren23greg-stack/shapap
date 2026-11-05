@@ -80,8 +80,9 @@ class OutboxNotifier extends Notifier<List<OutboxEvent>> {
     await _save();
   }
 
-  Future<void> markAllSynced() async {
-    state = [for (final e in state) e.copyWith(synced: true)];
+  /// Marks one event as sent. Call it only after the server has confirmed that event.
+  Future<void> markSynced(String id) async {
+    state = [for (final e in state) e.id == id ? e.copyWith(synced: true) : e];
     await _save();
   }
 

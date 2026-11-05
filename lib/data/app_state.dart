@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// true = internet on; false = offline (claims are saved on the device).
 final onlineProvider = StateProvider<bool>((ref) => true);
 
-/// true while the fake sync is running.
+/// true while events are being sent to the server.
 final syncingProvider = StateProvider<bool>((ref) => false);
 
 /// Demo hour for the busy-hour banner. Tap the banner to flip 10 / 3.

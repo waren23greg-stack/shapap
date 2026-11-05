@@ -15,7 +15,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(syncRunnerProvider); // keeps the fake sync alive
+    ref.watch(syncRunnerProvider); // keeps the sync running
     final isDark = ref.watch(themeModeProvider) == ThemeMode.dark;
     return Scaffold(
       backgroundColor: context.scaffoldBg,
